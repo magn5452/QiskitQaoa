@@ -42,58 +42,55 @@ def compute_expectation(counts, graph):
         avg: float
              expectation value
     """
-    sum_obj = 0
+    sum_cost = 0
     sum_count = 0
     for bitstring, count in counts.items():
         cost = maxcut_cost(bitstring, graph)
-        sum_obj += cost * count
+        sum_cost += cost * count
         sum_count += count
-    expectation_value = sum_obj / sum_count
+    expectation_value = sum_cost / sum_count
     return expectation_value
 
 
-# We will also bring the different circuit components that
-# build the qaoa circuit under a single function
-def create_qaoa_circuit(graph, theta) -> object:
+def create_qaoa_circuit(graph, theta):
     """
-    Creates a parametrized qaoa circuit
+    Creates qaoa circuit
 
     Args:
         graph: networkx graph
-        theta: list
-               unitary parameters
-
-    Returns:
-        qc: qiskit circuit
+        theta: qaoa parameters
     """
-    number_of_nodes = len(graph.nodes())
-    nqubits = number_of_nodes
-    p = len(theta) // 2  # number of alternating unitaries
-    qc = QuantumCircuit(nqubits)
 
-    beta = theta[:p]
-    gamma = theta[p:]
+    number_of_nodes = len(graph.nodes())
+    number_of_qubits = number_of_nodes
+    precision = len(theta) // 2  # number of alternating unitaries p
+    quantum_circuit = QuantumCircuit(number_of_qubits)
+
+    beta = theta[:precision]
+    gamma = theta[precision:]
 
     # initial_state
-    for i in range(0, nqubits):
-        qc.h(i)
+    for index_qubit in range(0, number_of_qubits):
+        quantum_circuit.h(index_qubit)
 
-    qc.barrier()
+    quantum_circuit.barrier()
 
-    for irep in range(0, p):
+    for index_repetition in range(0, precision):
 
         # problem unitary
         for pair in list(graph.edges()):
-            qc.rzz(2 * gamma[irep], pair[0], pair[1])
-        qc.barrier()
+            quantum_circuit.rzz(2 * gamma[index_repetition], pair[0], pair[1])
+
+        quantum_circuit.barrier()
 
         # mixer unitary
-        for i in range(0, nqubits):
-            qc.rx(2 * beta[irep], i)
+        for index_qubit in range(0, number_of_qubits):
+            quantum_circuit.rx(2 * beta[index_repetition], index_qubit)
 
-    qc.measure_all()
+    # measure
+    quantum_circuit.measure_all()
 
-    return qc
+    return quantum_circuit
 
 
 # Finally we write a function that executes the circuit on the chosen backend
@@ -103,8 +100,6 @@ def get_execute_circuit(graph, shots=512):
 
     Args:
         graph: networkx graph
-        p: int,
-           Number of repetitions of unitaries
     """
 
     backend = Aer.get_backend('qasm_simulator')
