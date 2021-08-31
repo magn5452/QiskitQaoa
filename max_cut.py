@@ -20,11 +20,12 @@ pos = nx.spring_layout(graph)
 nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels)
 
 # Returns a function to be optimized
-p = 1 # number of unitaries
+precision = 1 # number of unitaries p
 expectation = get_execute_circuit(graph)
 
 # Optimize
-initial_parameter = np.ones(2 * p)
+number_of_parameters = 2 * precision
+initial_parameter = np.ones(number_of_parameters)
 optimization_method = 'Cobyla'
 optimization_object = minimize(expectation, initial_parameter, method=optimization_method)
 print(optimization_object)
