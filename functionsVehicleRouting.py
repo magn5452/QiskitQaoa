@@ -21,7 +21,7 @@ def compute_expectation(counts, graph):
     sum_cost = 0
     sum_count = 0
     for bitstring, count in counts.items():
-        cost_calculator = CostVehicleRoutingCalculator(bitstring, graph, 1, 200)
+        cost_calculator = CostVehicleRoutingCalculator(bitstring, graph, 1, 100)
         cost = cost_calculator.vehicle_routing_cost()
         sum_cost += cost * count
         sum_count += count
@@ -57,8 +57,16 @@ def create_qaoa_circuit(graph, theta):
     for index_repetition in range(0, precision):
 
         # problem unitary
-        for pair in list(graph.edges()):
-            quantum_circuit.rzz(2 * gamma[index_repetition], pair[0], pair[1])
+        for i in range(0, number_of_qubits):
+            for j in range(0, i):
+                J = 1
+                quantum_circuit.rzz(2 * J * gamma[index_repetition], i, j)
+
+        quantum_circuit.barrier()
+
+        for i in range(0, number_of_qubits):
+            h = 1
+            quantum_circuit.rz(2 * h * gamma[index_repetition], i)
 
         quantum_circuit.barrier()
 
@@ -66,10 +74,13 @@ def create_qaoa_circuit(graph, theta):
         for index_qubit in range(0, number_of_qubits):
             quantum_circuit.rx(2 * beta[index_repetition], index_qubit)
 
+        quantum_circuit.barrier()
+
     # measure
     quantum_circuit.measure_all()
 
     return quantum_circuit
+
 
 
 # Finally we write a function that executes the circuit on the chosen backend
@@ -91,5 +102,3 @@ def get_execute_circuit(graph, shots=512):
         return compute_expectation(counts, graph)
 
     return execute_circuit
-
-

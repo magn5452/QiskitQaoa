@@ -1,20 +1,26 @@
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 
 from CostVehicleRoutingCalculator import CostVehicleRoutingCalculator
 
 # Setting Up Graph
-graph = nx.Graph()
-graph.add_nodes_from([0, 1, 2, 3])
-graph.add_weighted_edges_from([(0, 1, 36.84), (0, 2, 5.06), (0, 3, 30.63), (2, 3, 15.50)])
+from VehicleRoutingProblem import VehicleRoutingProblem
+from VehicleRoutingQUBO import VehicleRoutingQUBO
 
+graph = nx.DiGraph()
+graph.add_node(0)
+graph.add_node(1)
+graph.add_node(2)
+graph.add_node(3)
+graph.add_weighted_edges_from([[0, 1, 1], [0, 2, 1], [0, 3, 1], [1, 0, 1], [1, 2, 1], [1, 3, 1], [2, 0, 1], [2, 1, 1], [2, 3, 1], [3, 0, 1], [3, 1, 1], [3, 2, 1]])
 nx.draw_shell(graph, with_labels=True, alpha=0.8, node_size=500)
 labels = nx.get_edge_attributes(graph, 'weight')
 pos = nx.spring_layout(graph)
 nx.draw_networkx_edge_labels(graph, pos, edge_labels=labels)
 
-costCalculator = CostVehicleRoutingCalculator('101100100001', graph, 2, 100)
-print(costCalculator.get_adjacency_matrix())
-print(costCalculator.vehicle_routing_cost())
+vehicle_routing_problem = VehicleRoutingProblem(graph, 1, 100)
+vehicle_routing_QUBO = VehicleRoutingQUBO(vehicle_routing_problem)
+print(vehicle_routing_QUBO.calculate_cost([1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0]))
 
 plt.show()

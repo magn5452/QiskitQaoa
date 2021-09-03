@@ -13,7 +13,7 @@ from scipy.optimize import minimize
 # Setting Up Graph
 graph = nx.Graph()
 graph.add_nodes_from([0, 1, 2])
-graph.add_weighted_edges_from([(0, 1, 36.84), (0, 2, 5.06), (1, 2, 24.55)])
+graph.add_weighted_edges_from([(0, 1, 1),(1, 2, 1),(2, 0, 1)])
 
 nx.draw_shell(graph, with_labels=True, alpha=0.8, node_size=500)
 labels = nx.get_edge_attributes(graph, 'weight')
@@ -45,9 +45,5 @@ print(counts)
 
 # Plot Histogram
 plot_histogram(counts)
-
-costCalculator = CostVehicleRoutingCalculator('101010', graph, 2, 200)
-
-print(costCalculator.vehicle_routing_cost())
 
 plt.show()
