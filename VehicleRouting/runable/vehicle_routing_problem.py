@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
-from CostVehicleRoutingCalculator import CostVehicleRoutingCalculator
-from functionsVehicleRouting import get_execute_circuit
-from functionsVehicleRouting import create_qaoa_circuit
+from VehicleRouting.functions.functionsVehicleRouting import get_execute_circuit
+from VehicleRouting.functions.functionsVehicleRouting import create_qaoa_circuit
 from qiskit import Aer
 from qiskit.visualization import plot_histogram
 from scipy.optimize import minimize

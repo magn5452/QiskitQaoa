@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class CostVehicleRoutingCalculator:
+class CostCalculator:
 
     def __init__(self, bitstring, graph, number_of_cars, penalty_factor):
         self.dimensionality = graph.order()

@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
-import pylatexenc
 
-from functionsMaxCut import get_execute_circuit
-from functionsMaxCut import create_qaoa_circuit
+from MaxCut.functionsMaxCut import get_execute_circuit
+from MaxCut.functionsMaxCut import create_qaoa_circuit
 from qiskit import Aer
 from qiskit.visualization import plot_histogram
 from scipy.optimize import minimize

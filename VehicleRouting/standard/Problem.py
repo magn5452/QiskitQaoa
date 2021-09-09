@@ -1,15 +1,17 @@
 import networkx as nx
 import numpy as np
 
+from VehicleRouting.framework import ProblemFactory
 
-class VehicleRoutingProblem:
 
-    def __init__(self, graph, number_of_vehicles, penalty_factor):
-        self.number_of_vertices = graph.order()
-        self.number_of_edges = graph.number_of_edges()
-        self.number_of_vehicles = number_of_vehicles
-        self.graph = graph
-        self.penalty_factor = penalty_factor
+class Problem:
+
+    def __init__(self, factory: ProblemFactory):
+        self.graph = factory.create_graph()
+        self.number_of_vertices = self.graph.order()
+        self.number_of_edges = self.graph.number_of_edges()
+        self.number_of_vehicles = factory.create_number_of_vehicles()
+        self.penalty_factor = factory.create_penalty_factor()
         self.weights = np.real([*nx.get_edge_attributes(self.graph, 'weight').values()])
 
     def get_weights(self):

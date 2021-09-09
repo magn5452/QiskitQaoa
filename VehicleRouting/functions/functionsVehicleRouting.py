@@ -1,6 +1,6 @@
 from qiskit import Aer
 from qiskit import QuantumCircuit
-from CostVehicleRoutingCalculator import CostVehicleRoutingCalculator
+from VehicleRouting.standard.CostCalculator import CostCalculator
 
 
 def compute_expectation(counts, graph):
@@ -21,7 +21,7 @@ def compute_expectation(counts, graph):
     sum_cost = 0
     sum_count = 0
     for bitstring, count in counts.items():
-        cost_calculator = CostVehicleRoutingCalculator(bitstring, graph, 1, 100)
+        cost_calculator = CostCalculator(bitstring, graph, 1, 100)
         cost = cost_calculator.vehicle_routing_cost()
         sum_cost += cost * count
         sum_count += count
