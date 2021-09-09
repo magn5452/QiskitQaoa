@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 
-class VehicleRoutingProblemStrategy:
+class VehicleRoutingProblemStrategy(ABC):
     @abstractmethod
     def create_graph(self):
         pass
