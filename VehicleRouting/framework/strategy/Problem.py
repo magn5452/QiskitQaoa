@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 
-from VehicleRouting.framework import ProblemFactory
+from VehicleRouting.framework.factory import ProblemFactory
 
 
 class Problem:
@@ -34,3 +34,6 @@ class Problem:
 
     def get_edges(self):
         return self.graph.edges
+
+    def get_vertices(self):
+        return self.graph.nodes

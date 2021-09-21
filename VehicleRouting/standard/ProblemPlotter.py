@@ -1,7 +1,6 @@
 import networkx as nx
-from matplotlib import pyplot as plt
 
-from VehicleRouting.standard import Problem
+from VehicleRouting.framework.strategy import Problem
 
 
 class ProblemPlotter():

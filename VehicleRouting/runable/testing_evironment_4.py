@@ -2,14 +2,14 @@ from matplotlib import pyplot as plt
 from qiskit.visualization import plot_histogram
 
 from VehicleRouting.framework.strategy.CircuitPlotter import CircuitPlotter
-from VehicleRouting.standard.strategies.CircuitPlotterStrategy import MPLCircuitPlotStrategy
-from VehicleRouting.standard.strategies.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
 from VehicleRouting.framework.strategy.Problem import Problem
 from VehicleRouting.standard.ProblemPlotter import ProblemPlotter
 from VehicleRouting.standard.Program import Program
 from VehicleRouting.standard.Qubo import Qubo
 from VehicleRouting.standard.factories.ProblemFactories import TwoVertexProblemFactory
 from VehicleRouting.standard.factories.QaoaMinimumEigenSolverFactories import StandardQaoaMinimumEigenSolverFactory
+from VehicleRouting.standard.strategies.CircuitPlotterStrategy import MPLCircuitPlotStrategy
+from VehicleRouting.standard.strategies.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
 from VehicleRouting.standard.strategies.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy
 
 problem_factory = TwoVertexProblemFactory()
@@ -19,7 +19,9 @@ plotter.plot_problem()
 
 quboCalculatorStrategy = VertexOrderingQuboCalculatorStrategy(problem)
 qubo = Qubo(quboCalculatorStrategy)
+
 quadratic_program = qubo.get_quadratic_program()
+print(quadratic_program)
 
 qaoa_factory = StandardQaoaMinimumEigenSolverFactory()
 solver = QAOAMinimumEigenSolver(qaoa_factory)
