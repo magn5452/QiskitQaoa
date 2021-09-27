@@ -1,5 +1,5 @@
 from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.framework.strategy.MinimumEigenSolver import MinimumEigenSolver
+from VehicleRouting.framework.interfaces.MinimumEigenSolver import MinimumEigenSolver
 
 
 class Program:

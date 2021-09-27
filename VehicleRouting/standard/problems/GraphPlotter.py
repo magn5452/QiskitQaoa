@@ -1,11 +1,11 @@
 import networkx as nx
 
-from VehicleRouting.framework.strategy import Problem
+from VehicleRouting.framework.problem.GraphProblem import GraphProblem
 
 
-class ProblemPlotter():
+class GraphPlotter():
 
-    def __init__(self, problem: Problem):
+    def __init__(self, problem: GraphProblem):
         self.problem = problem
 
     def plot_problem(self):

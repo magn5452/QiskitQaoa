@@ -6,24 +6,25 @@ from qiskit.providers.aer import QasmSimulator
 from qiskit.visualization import plot_histogram
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
-from VehicleRouting.framework.strategy.CircuitPlotter import CircuitPlotter
-from VehicleRouting.framework.strategy.Problem import Problem
-from VehicleRouting.standard.ProblemPlotter import ProblemPlotter
+from VehicleRouting.framework.qaoa.CircuitPlotter import CircuitPlotter
+from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
+from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.standard.factories.ProblemFactories import TwoVertexProblemFactory
-from VehicleRouting.standard.strategies.CircuitPlotterStrategy import MPLCircuitPlotStrategy
-from VehicleRouting.standard.strategies.QuboCalculatorStrategy import EdgeQuboCalculatorStrategy
+from VehicleRouting.standard.concretization.GraphStrategy import TwoVertexProblemStrategy
+from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotStrategy
+from VehicleRouting.standard.concretization.QuboCalculatorStrategy import EdgeQuboCalculatorStrategy
 from qiskit.circuit import Parameter
 
-problem_factory = TwoVertexProblemFactory()
-problem = Problem(problem_factory)
-plotter = ProblemPlotter(problem)
+problem_factory = TwoVertexProblemStrategy()
+problem = VehicleRoutingProblem(problem_factory)
+plotter = GraphPlotter(problem)
 plotter.plot_problem()
 
 quboCalculatorStrategy = EdgeQuboCalculatorStrategy(problem)
 qubo = Qubo(quboCalculatorStrategy)
 quadratic_program = qubo.get_quadratic_program()
 print(quadratic_program)
+
 precision = 2
 classical_optimization_method = COBYLA()
 # backend = StatevectorSimulator(precision='single')

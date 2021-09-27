@@ -1,20 +1,20 @@
 from matplotlib import pyplot as plt
 from qiskit.visualization import plot_histogram
 
-from VehicleRouting.framework.strategy.CircuitPlotter import CircuitPlotter
-from VehicleRouting.framework.strategy.Problem import Problem
-from VehicleRouting.standard.ProblemPlotter import ProblemPlotter
+from VehicleRouting.framework.qaoa.CircuitPlotter import CircuitPlotter
+from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
+from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.Program import Program
 from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.standard.factories.ProblemFactories import TwoVertexProblemFactory
+from VehicleRouting.standard.concretization.GraphStrategy import TwoVertexProblemStrategy
 from VehicleRouting.standard.factories.QaoaMinimumEigenSolverFactories import StandardQaoaMinimumEigenSolverFactory
-from VehicleRouting.standard.strategies.CircuitPlotterStrategy import MPLCircuitPlotStrategy
-from VehicleRouting.standard.strategies.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
-from VehicleRouting.standard.strategies.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy
+from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotStrategy
+from VehicleRouting.standard.concretization.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
+from VehicleRouting.standard.concretization.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy
 
-problem_factory = TwoVertexProblemFactory()
-problem = Problem(problem_factory)
-plotter = ProblemPlotter(problem)
+problem_factory = TwoVertexProblemStrategy()
+problem = VehicleRoutingProblem(problem_factory)
+plotter = GraphPlotter(problem)
 plotter.plot_problem()
 
 quboCalculatorStrategy = VertexOrderingQuboCalculatorStrategy(problem)

@@ -1,13 +1,13 @@
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
-from VehicleRouting.framework.strategy.Problem import Problem
+from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.standard.factories.ProblemFactories import TwoVertexProblemFactory
-from VehicleRouting.standard.strategies.QuboCalculatorStrategy import EdgeQuboCalculatorStrategy
+from VehicleRouting.standard.concretization.GraphStrategy import TwoVertexProblemStrategy
+from VehicleRouting.standard.concretization.QuboCalculatorStrategy import EdgeQuboCalculatorStrategy
 
-problem_factory = TwoVertexProblemFactory()
-problem = Problem(problem_factory)
+problem_factory = TwoVertexProblemStrategy()
+problem = VehicleRoutingProblem(problem_factory)
 quboCalculatorStrategy = EdgeQuboCalculatorStrategy(problem)
 qubo = Qubo(quboCalculatorStrategy)
 

@@ -1,13 +1,12 @@
 from abc import abstractmethod, ABC
 
+from VehicleRouting.framework.qaoa.CircuitPlotter import CircuitPlotter
 
-class CircuitPlotStrategy(ABC):
-    @abstractmethod
+
+class MPLCircuitPlotter(CircuitPlotter):
     def plot(self, circuit):
         pass
 
-
-class MPLCircuitPlotStrategy(CircuitPlotStrategy):
     def __init__(self):
         pass
 
@@ -15,7 +14,7 @@ class MPLCircuitPlotStrategy(CircuitPlotStrategy):
         circuit.draw(output="mpl")
 
 
-class PrintCircuitPlotStrategy(CircuitPlotStrategy):
+class PrintCircuitPlotter(CircuitPlotter):
     def __init__(self):
         pass
 

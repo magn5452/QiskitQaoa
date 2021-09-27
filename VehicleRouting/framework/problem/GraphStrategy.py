@@ -1,7 +1,12 @@
 from abc import abstractmethod, ABC
 
 
-class QAOAMinimumEigenSolverFactory(ABC):
+class GraphStrategy(ABC):
     @abstractmethod
-    def create_qaoa(self):
+    def get_graph(self):
         pass
+
+
+
+
+

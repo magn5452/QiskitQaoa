@@ -1,3 +1,4 @@
+import numpy as np
 from qiskit import Aer
 from qiskit import QuantumCircuit
 from VehicleRouting.standard.CostCalculator import CostCalculator
@@ -41,7 +42,7 @@ def create_qaoa_circuit(graph, theta):
         theta: qaoa parameters
     """
     number_of_nodes = len(graph.nodes())
-    number_of_qubits = number_of_nodes * (number_of_nodes - 1) # n*(n-1)
+    number_of_qubits = number_of_nodes * (number_of_nodes-1) # n*(n-1)
     precision = len(theta) // 2  # number of alternating unitaries p
     quantum_circuit = QuantumCircuit(number_of_qubits)
 
@@ -60,20 +61,19 @@ def create_qaoa_circuit(graph, theta):
         for i in range(0, number_of_qubits):
             for j in range(0, i):
                 J = 1
-                quantum_circuit.rzz(2 * J * gamma[index_repetition], i, j)
+                quantum_circuit.rzz(2* gamma[index_repetition], i, j)
 
         quantum_circuit.barrier()
 
         for i in range(0, number_of_qubits):
-            h = 1
-            quantum_circuit.rz(2 * h * gamma[index_repetition], i)
+            quantum_circuit.rz(2 * gamma[index_repetition], i)
 
         quantum_circuit.barrier()
 
         # mixer unitary
         for index_qubit in range(0, number_of_qubits):
-            quantum_circuit.rx(2 * beta[index_repetition], index_qubit)
-
+            quantum_circuit.rxx(2 * beta[index_repetition], index_qubit,np.mod(index_qubit+1,number_of_qubits))
+            quantum_circuit.ryy(2 * beta[index_repetition], index_qubit,np.mod(index_qubit+1,number_of_qubits))
         quantum_circuit.barrier()
 
     # measure

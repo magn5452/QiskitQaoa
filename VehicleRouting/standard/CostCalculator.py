@@ -26,7 +26,7 @@ class CostCalculator:
         for i in range(0, self.dimensionality):
             for j in range(0, self.dimensionality):
                 if i != j and self.graph.has_edge(i, j):
-                    edge_weight = self.graph.edges[i, j]['weight']
+                    edge_weight = self.graph.couplings[i, j]['weight']
                     cost += edge_weight * self.adjacency_matrix[i, j]
         return cost
 

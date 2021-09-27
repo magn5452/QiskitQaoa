@@ -1,7 +1,7 @@
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
-from VehicleRouting.framework.strategy.MinimumEigenSolver import MinimumEigenSolver
+from VehicleRouting.framework.interfaces.MinimumEigenSolver import MinimumEigenSolver
 
 
 class QAOAMinimumEigenSolver(MinimumEigenSolver):
