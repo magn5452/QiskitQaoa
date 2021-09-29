@@ -14,7 +14,7 @@ class MaxCutProblem(GraphProblem):
         self.number_of_vertices = self.graph.order()
         self.number_of_edges = self.graph.number_of_edges()
 
-    def get_weights(self):
+    def get_weight_vector(self):
         if nx.is_weighted(self.graph):
             return np.real([*nx.get_edge_attributes(self.graph, 'weight').values()])
         else:
@@ -39,7 +39,7 @@ class MaxCutProblem(GraphProblem):
         return self.number_of_edges
 
     def get_edges(self):
-        return self.graph.couplings
+        return self.graph.edges
 
     def get_vertices(self):
         return self.graph.nodes

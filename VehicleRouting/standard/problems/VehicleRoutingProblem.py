@@ -19,7 +19,7 @@ class VehicleRoutingProblem(GraphProblem, HardProblem):
         self.penalty_factor = factory.create_penalty_factor()
         self.depot = factory.create_depot()
 
-    def get_weights(self):
+    def get_weight_vector(self):
         if nx.is_weighted(self.graph):
             return np.real([*nx.get_edge_attributes(self.graph, 'weight').values()])
         else:

@@ -19,7 +19,7 @@ class GraphProblem(ABC):
         pass
 
     @abstractmethod
-    def get_weights(self):
+    def get_weight_vector(self):
         pass
 
     @abstractmethod

@@ -1,47 +1,27 @@
 from matplotlib import pyplot as plt
+from qiskit import QuantumCircuit, Aer, assemble
+from qiskit.extensions import HamiltonianGate
+from qiskit.providers import aer
+from qiskit.providers.aer import StatevectorSimulator
+from qiskit.quantum_info import Operator
 from qiskit.visualization import plot_histogram
 
-from VehicleRouting.framework.qaoa.CircuitPlotter import CircuitPlotter
-from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
-from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
-from VehicleRouting.standard.Program import Program
-from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.standard.concretization.GraphStrategy import TwoVertexProblemStrategy
-from VehicleRouting.standard.factories.QaoaMinimumEigenSolverFactories import StandardQaoaMinimumEigenSolverFactory
-from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotStrategy
-from VehicleRouting.standard.concretization.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
-from VehicleRouting.standard.concretization.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy
+from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 
-problem_factory = TwoVertexProblemStrategy()
-problem = VehicleRoutingProblem(problem_factory)
-plotter = GraphPlotter(problem)
-plotter.plot_problem()
+circuit = QuantumCircuit(4)
+circuit.h(0)
+circuit.h(1)
+circuit.h(2)
+circuit.h(3)
 
-quboCalculatorStrategy = VertexOrderingQuboCalculatorStrategy(problem)
-qubo = Qubo(quboCalculatorStrategy)
+circuit.measure_all()
 
-quadratic_program = qubo.get_quadratic_program()
-print(quadratic_program)
+circuit_plotter = MPLCircuitPlotter()
+circuit_plotter.plot(circuit)
 
-qaoa_factory = StandardQaoaMinimumEigenSolverFactory()
-solver = QAOAMinimumEigenSolver(qaoa_factory)
-program = Program(qubo, solver)
-program.run()
-result = program.get_result()
+backend = StatevectorSimulator(precision='single')
+backend.shots = 2 ** 8
 
-print(result)
-print(result.min_eigen_solver_result)
-
-optimal_circuit = solver.get_optimal_circuit()
-optimal_vector = solver.get_optimal_vector()
-optimal_cost = solver.get_optimal_cost()
-
-circuit_plotter = CircuitPlotter(MPLCircuitPlotStrategy())
-circuit_plotter.plot_circuit(optimal_circuit)
-
-print(optimal_cost)
-print(optimal_vector)
-
-plot_histogram(optimal_vector, color='blue')
+counts = backend.run(circuit).result().get_counts()
 
 plt.show()

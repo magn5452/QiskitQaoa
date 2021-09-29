@@ -1,59 +1,41 @@
+import numpy as np
 from matplotlib import pyplot as plt
-from qiskit import QuantumCircuit
-from qiskit.algorithms import QAOA
-from qiskit.algorithms.optimizers import COBYLA
-from qiskit.providers.aer import QasmSimulator
-from qiskit.visualization import plot_histogram
-from qiskit_optimization.algorithms import MinimumEigenOptimizer
-
-from VehicleRouting.framework.qaoa.CircuitPlotter import CircuitPlotter
-from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
-from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
-from VehicleRouting.standard.Qubo import Qubo
-from VehicleRouting.standard.concretization.GraphStrategy import TwoVertexProblemStrategy
-from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotStrategy
-from VehicleRouting.standard.concretization.QuboCalculatorStrategy import EdgeQuboCalculatorStrategy
+from qiskit import QuantumCircuit, Aer, transpile, assemble
+from qiskit.circuit import Gate
 from qiskit.circuit import Parameter
+from qiskit.extensions import UnitaryGate, HamiltonianGate
+from qiskit.providers.aer import StatevectorSimulator
+from qiskit.visualization import plot_histogram
+from qiskit_nature.operators.second_quantization import SpinOp
 
-problem_factory = TwoVertexProblemStrategy()
-problem = VehicleRoutingProblem(problem_factory)
-plotter = GraphPlotter(problem)
-plotter.plot_problem()
+from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 
-quboCalculatorStrategy = EdgeQuboCalculatorStrategy(problem)
-qubo = Qubo(quboCalculatorStrategy)
-quadratic_program = qubo.get_quadratic_program()
-print(quadratic_program)
+beta = Parameter('beta')
+spinop = SpinOp([("++--", 1),("--++", 1)])
+print(spinop.to_matrix())
 
-precision = 2
-classical_optimization_method = COBYLA()
-# backend = StatevectorSimulator(precision='single')
-backend = QasmSimulator()
-
-
-qc=QuantumCircuit(qubo.get_number_of_variables())
-print(qc)
-
-qc.barrier()
-beta = Parameter("$\\beta$")
-for i in range(qubo.get_number_of_variables()):
-    qc.rx(2*beta,i)
-qc.barrier()
+gate = HamiltonianGate(spinop.to_matrix(), np.pi/2, label="Gate")
+qc = QuantumCircuit(4)
+qc.h(0)
+qc.h(1)
+qc.h(2)
+qc.h(3)
 
 
-mixer  = qc
-qaoa = QAOA(optimizer=classical_optimization_method, reps=precision, quantum_instance=backend, mixer=mixer)
-optimizer = MinimumEigenOptimizer(qaoa)
-result = optimizer.solve(quadratic_program)
+qc.append(gate, [0,1,2,3])
+
+
+
+backend = StatevectorSimulator(precision='double')
+transpiled = transpile(qc, backend=backend)
+transpiled.draw('mpl')
+result = backend.run(transpiled).result()
+counts = result.get_counts()
 
 print(result)
-print(result.min_eigen_solver_result)
+print(counts)
+plot_histogram(counts)
 
-optimal_circuit = qaoa.get_optimal_circuit()
-
-circuit_plotter = CircuitPlotter(MPLCircuitPlotStrategy())
-circuit_plotter.plot_circuit(optimal_circuit)
-optimal_vector = qaoa.get_optimal_vector()
-
-plot_histogram(optimal_vector, color='blue')
+circuit_plotter = MPLCircuitPlotter()
+circuit_plotter.plot(qc)
 plt.show()

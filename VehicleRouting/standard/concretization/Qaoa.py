@@ -1,5 +1,5 @@
 import numpy as np
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 from scipy.optimize import minimize
 from VehicleRouting.framework.factory.QaoaFactory import QaoaFactory
 
@@ -8,12 +8,12 @@ class Qaoa:
 
     def __init__(self, factory: QaoaFactory):
         # Strategies
-        self.initial_parameter = factory.create_initial_parameter()
         self.precision = factory.create_precision()
         self.backend = factory.create_backend().get_backend()
         self.initial_strategy = factory.create_initial()
         self.mixer_strategy = factory.create_mixer()
         self.phase_strategy = factory.create_phase()
+        self.measurement_strategy = factory.create_measurement()
 
         # Qubo
         self.qubo = factory.create_qubo()
@@ -119,7 +119,7 @@ class Qaoa:
         Args:
             quantum_circuit: quantum circuit
         """
-        quantum_circuit.measure_all()
+        self.measurement_strategy.set_up_measurement_circuit(quantum_circuit)
 
     def get_execute_circuit(self):
         """
@@ -130,29 +130,19 @@ class Qaoa:
 
         def execute_circuit(theta):
             quantum_circuit = self.set_up_qaoa_circuit(theta)
-            counts = self.backend.run(quantum_circuit).result().get_counts()
+            transpiled = transpile(quantum_circuit, backend=self.backend)
+            counts = self.backend.run(transpiled).result().get_counts()
             return self.calculate_expectation(counts)
 
         return execute_circuit
 
-    def minimize(self):
-        optimization_method = 'COBYLA'
-        execute_circuit = self.get_execute_circuit()
-        result = minimize(execute_circuit, self.initial_parameter, method=optimization_method)
-        self.result = result
-        return result
+    def simulate(self, theta):
+        transpiled = transpile(self.set_up_qaoa_circuit(theta), backend=self.backend)
+        result = self.backend.run(transpiled).result()
+        counts = result.get_counts()
+        expectation = self.calculate_expectation(counts)
+        return result, counts, expectation
 
-    def simulate(self):
-        return self.backend.run(self.get_optimal_circuit()).result().get_counts()
+    def get_precision(self):
+        return self.precision
 
-    def get_result(self):
-        if self.result is not None:
-            return self.result
-        else:
-            return self.minimize()
-
-    def get_optimal_circuit(self):
-        return self.set_up_qaoa_circuit(self.get_optimal_parameter())
-
-    def get_optimal_parameter(self):
-        return self.get_result().x

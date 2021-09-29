@@ -4,11 +4,10 @@ from qiskit import Aer
 from qiskit.visualization import plot_histogram
 from scipy.optimize import minimize
 
-from VehicleRouting.framework.factory.MaxCutFactory import MaxCutFactory
 from VehicleRouting.standard.factories.MaxCutFactories import TwoConnectedMaxCutFactory
 from VehicleRouting.standard.problems.MaxCutProblem import MaxCutProblem
 from VehicleRouting.functions.functionsMaxCut import get_expectation, get_execute_circuit, create_qaoa_circuit
-from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
+from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 
 number_of_vertices = 4
 problem_factory = TwoConnectedMaxCutFactory()

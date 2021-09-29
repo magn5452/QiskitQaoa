@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
 from VehicleRouting.framework.qaoa.BackendStrategy import BackendStrategy
-from VehicleRouting.framework.qaoa.CircuitStrategy import InitialStrategy, MixerStrategy, PhaseStrategy
+from VehicleRouting.framework.qaoa.CircuitStrategy import InitialStrategy, MixerStrategy, PhaseStrategy, \
+    MeasurementStrategy
+from VehicleRouting.framework.interfaces.QaoaMinimizer import QaoaMinimizer
 from VehicleRouting.standard.Qubo import Qubo
 
 
@@ -27,9 +29,9 @@ class QaoaFactory(ABC):
         pass
 
     @abstractmethod
-    def create_initial_parameter(self):
+    def create_measurement(self) -> MeasurementStrategy:
         pass
 
     @abstractmethod
-    def create_precision(self):
+    def create_precision(self) -> int:
         pass

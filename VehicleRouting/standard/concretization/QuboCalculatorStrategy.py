@@ -108,7 +108,7 @@ class EdgeQuboCalculatorStrategy(QuboCalculatorStrategy):
                 (self.problem.get_number_of_vertices() - 1) + self.problem.get_number_of_vehicles() ** 2)
 
     def calculate_linear(self):
-        g_A = self.problem.get_weights()
+        g_A = self.problem.get_weight_vector()
         g_B = -2 * self.problem.get_penalty_factor() * (self.problem.get_number_of_vehicles() - 1) * (
                 self.calculate_z_S(0) + self.calculate_z_T(0))
         g_C = -4 * self.problem.get_penalty_factor() * (np.ones(self.problem.get_number_of_edges()))

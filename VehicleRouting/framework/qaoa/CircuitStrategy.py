@@ -19,3 +19,8 @@ class MixerStrategy(ABC):
     @abstractmethod
     def set_up_mixer_circuit(self, theta, index_repetition: int, quantum_circuit, num_qubits: int, precision: int):
         pass
+
+class MeasurementStrategy(ABC):
+    @abstractmethod
+    def set_up_measurement_circuit(self, quantum_circuit):
+        pass

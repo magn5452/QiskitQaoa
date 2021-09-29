@@ -10,7 +10,7 @@ from scipy.optimize import minimize
 
 
 # Setting Up Graph
-from VehicleRouting.standard.problems.GraphPlotter import GraphPlotter
+from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.concretization.GraphStrategy import SimpleExperimentProblemStrategy
 
 problem_factory = SimpleExperimentProblemStrategy()

@@ -10,7 +10,7 @@ class AerBackendStrategy(BackendStrategy):
 
     def get_backend(self):
         backend = Aer.get_backend('aer_simulator')
-        backend.shots = 1
+        backend.shots = 2^8
         return backend
 
 
