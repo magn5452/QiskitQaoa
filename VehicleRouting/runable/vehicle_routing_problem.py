@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import Experiment1VehicleRoutingProblemFactory
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 from VehicleRouting.functions.functionsVehicleRouting import get_execute_circuit
 from VehicleRouting.functions.functionsVehicleRouting import create_qaoa_circuit
@@ -13,7 +14,7 @@ from scipy.optimize import minimize
 from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.concretization.GraphStrategy import SimpleExperimentProblemStrategy
 
-problem_factory = SimpleExperimentProblemStrategy()
+problem_factory = Experiment1VehicleRoutingProblemFactory()
 problem = VehicleRoutingProblem(problem_factory)
 plotter = GraphPlotter(problem)
 plotter.plot_problem()

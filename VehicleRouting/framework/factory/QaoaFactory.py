@@ -3,13 +3,12 @@ from abc import ABC, abstractmethod
 from VehicleRouting.framework.qaoa.BackendStrategy import BackendStrategy
 from VehicleRouting.framework.qaoa.CircuitStrategy import InitialStrategy, MixerStrategy, PhaseStrategy, \
     MeasurementStrategy
-from VehicleRouting.framework.interfaces.QaoaMinimizer import QaoaMinimizer
-from VehicleRouting.standard.Qubo import Qubo
+from VehicleRouting.standard.concretization.QuboImpl import QuboImpl
 
 
 class QaoaFactory(ABC):
     @abstractmethod
-    def create_qubo(self) -> Qubo:
+    def create_qubo(self) -> QuboImpl:
         pass
 
     @abstractmethod

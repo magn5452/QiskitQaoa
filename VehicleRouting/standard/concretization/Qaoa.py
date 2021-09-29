@@ -17,12 +17,9 @@ class Qaoa:
 
         # Qubo
         self.qubo = factory.create_qubo()
-        self.calculator_strategy = self.qubo.get_calculator_strategy()
+        self.calculator_strategy = self.qubo.get_qubo_calculator_strategy()
         self.quadratic_program = self.qubo.get_quadratic_program()
         self.num_qubits = self.quadratic_program.get_num_vars()
-
-        # Result
-        self.result = None
 
     def calculate_expectation(self, counts):
         """
@@ -71,7 +68,7 @@ class Qaoa:
             quantum_circuit: quantum circuit
         """
 
-        self.initial_strategy.set_up_initial_state_circuit(quantum_circuit, self.num_qubits)
+        self.initial_strategy.set_up_initial_state_circuit(quantum_circuit)
 
     def set_up_main_circuit(self, theta, quantum_circuit):
         """
@@ -82,35 +79,36 @@ class Qaoa:
             quantum_circuit: quantum circuit
         """
 
-        for index_repetition in range(0, self.precision):
-            self.set_up_phase_circuit(theta, index_repetition, quantum_circuit)
-            self.set_up_mixer_circuit(theta, index_repetition, quantum_circuit)
+        gamma_list = theta[self.precision:]
+        beta_list = theta[:self.precision]
 
-    def set_up_phase_circuit(self, theta, index_repetition, quantum_circuit):
+        for index_repetition in range(0, self.precision):
+            gamma = gamma_list[index_repetition]
+            beta = beta_list[index_repetition]
+            self.set_up_phase_circuit(gamma, quantum_circuit)
+            self.set_up_mixer_circuit(beta, quantum_circuit)
+
+    def set_up_phase_circuit(self, gamma, quantum_circuit):
         """
         Sets up phase qaoa circuit
 
         Args:
-            theta: qaoa parameters
-            index_repetition: index repetition
+            gamma: phase qaoa parameters
             quantum_circuit: quantum circuit
         """
 
-        self.phase_strategy.set_up_phase_circuit(theta, index_repetition, quantum_circuit, self.num_qubits,
-                                                 self.precision)
+        self.phase_strategy.set_up_phase_circuit(gamma, quantum_circuit)
 
-    def set_up_mixer_circuit(self, theta, index_repetition, quantum_circuit):
+    def set_up_mixer_circuit(self, beta, quantum_circuit):
         """
         Sets up mixer qaoa circuit
 
         Args:
-            theta: qaoa parameters
-            index_repetition: index repetition
+            beta: mixer qaoa parameters
             quantum_circuit: quantum circuit
         """
 
-        self.mixer_strategy.set_up_mixer_circuit(theta, index_repetition, quantum_circuit, self.num_qubits,
-                                                 self.precision)
+        self.mixer_strategy.set_up_mixer_circuit(beta, quantum_circuit)
 
     def set_up_measurement_circuit(self, quantum_circuit):
         """

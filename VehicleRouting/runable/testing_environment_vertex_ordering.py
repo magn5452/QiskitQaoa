@@ -3,7 +3,8 @@ from qiskit.visualization import plot_histogram
 
 from VehicleRouting.standard.concretization.QaoaMinimizer import QaoaMinimizerImpl
 from VehicleRouting.standard.factories.QaoaFactory import VertexOrderingVehicleRoutingQaoaFactory
-from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import SimpleVehicleRoutingProblemFactory
+from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import SimpleVehicleRoutingProblemFactory, \
+    Experiment1VehicleRoutingProblemFactory
 from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 from VehicleRouting.standard.concretization.Qaoa import Qaoa

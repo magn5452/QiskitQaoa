@@ -4,26 +4,29 @@ from VehicleRouting.framework.factory.QaoaFactory import QaoaFactory
 from VehicleRouting.framework.qaoa.BackendStrategy import BackendStrategy
 from VehicleRouting.framework.qaoa.CircuitStrategy import InitialStrategy, PhaseStrategy, MixerStrategy, \
     MeasurementStrategy
-from VehicleRouting.framework.interfaces.QaoaMinimizer import QaoaMinimizer
-from VehicleRouting.standard.Qubo import Qubo
+from VehicleRouting.standard.concretization.QuboImpl import QuboImpl
 from VehicleRouting.standard.problems.MaxCutProblem import MaxCutProblem
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 from VehicleRouting.standard.qaoa.BackendStrategy import AerBackendStrategy, NoisyBackendStrategy, \
     StateVectorBackendStrategy
-from VehicleRouting.standard.qaoa.CircuitStrategy import RXGateMixerStrategy, HGateInitialStrategy, \
-    WeightedZGatePhaseStrategy, ZGatePhaseStrategy, NoMeasurementStrategy, AllMeasurementStrategy, CustomMixerStrategy, \
-    OneHotSingleInitialStrategy
+
 from VehicleRouting.standard.concretization.QuboCalculatorStrategy import MaxCutQuboCalculatorStrategy, \
     VertexOrderingQuboCalculatorStrategy, EdgeQuboCalculatorStrategy
+from VehicleRouting.standard.qaoa.InitialStrategy import HGateInitialStrategy, OneHotSingleInitialStrategy, \
+    CustomInitialStrategy
+from VehicleRouting.standard.qaoa.MeasurementStrategy import NoMeasurementStrategy, AllMeasurementStrategy
+from VehicleRouting.standard.qaoa.MixerStrategy import RXGateMixerStrategy, CustomMixerStrategy
+from VehicleRouting.standard.qaoa.PhaseStrategy import ZGatePhaseStrategy, WeightedZGatePhaseStrategy
+
 
 class ExactMaxCutQaoaFactory(QaoaFactory):
 
     def __init__(self, problem: MaxCutProblem):
         self.problem = problem
 
-    def create_qubo(self) -> Qubo:
+    def create_qubo(self) -> QuboImpl:
         calculator_strategy = MaxCutQuboCalculatorStrategy(self.problem)
-        return Qubo(calculator_strategy)
+        return QuboImpl(calculator_strategy)
 
     def create_backend(self) -> BackendStrategy:
         return StateVectorBackendStrategy()
@@ -53,9 +56,9 @@ class NoisyMaxCutQaoaFactory(QaoaFactory):
     def __init__(self, problem: MaxCutProblem):
         self.problem = problem
 
-    def create_qubo(self) -> Qubo:
+    def create_qubo(self) -> QuboImpl:
         calculator_strategy = MaxCutQuboCalculatorStrategy(self.problem)
-        return Qubo(calculator_strategy)
+        return QuboImpl(calculator_strategy)
 
     def create_backend(self) -> BackendStrategy:
         return NoisyBackendStrategy()
@@ -82,22 +85,22 @@ class VertexOrderingVehicleRoutingQaoaFactory(QaoaFactory):
     def create_measurement(self) -> MeasurementStrategy:
         return NoMeasurementStrategy()
 
-    def create_qubo(self) -> Qubo:
+    def create_qubo(self) -> QuboImpl:
         calculator_strategy = VertexOrderingQuboCalculatorStrategy(self.problem)
-        return Qubo(calculator_strategy)
+        return QuboImpl(calculator_strategy)
 
     def create_backend(self) -> BackendStrategy:
         return StateVectorBackendStrategy()
 
     def create_mixer(self) -> MixerStrategy:
-        return CustomMixerStrategy(self.problem)
+        return CustomMixerStrategy()
 
     def create_phase(self) -> PhaseStrategy:
         couplings = self.get_weighted_couplings()
         return WeightedZGatePhaseStrategy(couplings)
 
     def create_initial(self) -> InitialStrategy:
-        return OneHotSingleInitialStrategy(self.problem.get_number_of_vertices())
+        return OneHotSingleInitialStrategy()
 
     def create_precision(self):
         return 1
@@ -125,9 +128,9 @@ class EdgeVehicleRoutingQaoaFactory(QaoaFactory):
     def __init__(self, problem: VehicleRoutingProblem):
         self.problem = problem
 
-    def create_qubo(self) -> Qubo:
+    def create_qubo(self) -> QuboImpl:
         calculator_strategy = EdgeQuboCalculatorStrategy(self.problem)
-        return Qubo(calculator_strategy)
+        return QuboImpl(calculator_strategy)
 
     def create_backend(self) -> BackendStrategy:
         return AerBackendStrategy()

@@ -19,7 +19,6 @@ class SimpleVehicleRoutingProblemFactory(VehicleRoutingProblemFactory):
         return 0
 
 
-
 class Experiment1VehicleRoutingProblemFactory(VehicleRoutingProblemFactory):
 
     def create_graph_strategy(self) -> GraphStrategy:

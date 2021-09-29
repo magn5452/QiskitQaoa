@@ -1,9 +1,10 @@
 from qiskit_optimization import QuadraticProgram
 
+from VehicleRouting.framework.interfaces.Qubo import Qubo
 from VehicleRouting.standard.concretization.QuboCalculatorStrategy import QuboCalculatorStrategy
 
 
-class Qubo:
+class QuboImpl(Qubo):
 
     def __init__(self, calculator_strategy: QuboCalculatorStrategy):
         self.calculator_strategy = calculator_strategy
@@ -18,9 +19,7 @@ class Qubo:
         constant = self.calculator_strategy.calculate_constant()
         linear = self.calculator_strategy.calculate_linear()
         quadratic = self.calculator_strategy.calculate_quadratic()
-
         quadratic_program.minimize(constant=constant, linear=linear, quadratic=quadratic)
-
         return quadratic_program
 
     def calculate_cost(self, x):
@@ -29,5 +28,5 @@ class Qubo:
         constant_term = self.calculator_strategy.calculate_constant()
         return quadratic_term + linear_term + constant_term
 
-    def get_calculator_strategy(self):
+    def get_qubo_calculator_strategy(self):
         return self.calculator_strategy

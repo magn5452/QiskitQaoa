@@ -1,9 +1,9 @@
-from VehicleRouting.standard.Qubo import Qubo
+from VehicleRouting.standard.concretization.QuboImpl import QuboImpl
 from VehicleRouting.framework.interfaces.MinimumEigenSolver import MinimumEigenSolver
 
 
 class Program:
-    def __init__(self, qubo: Qubo, minimum_eigen_solver: MinimumEigenSolver):
+    def __init__(self, qubo: QuboImpl, minimum_eigen_solver: MinimumEigenSolver):
         self.qubo = qubo
         self.minimum_eigen_solver = minimum_eigen_solver
         self.result = None
