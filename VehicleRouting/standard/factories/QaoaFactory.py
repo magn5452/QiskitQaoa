@@ -4,6 +4,7 @@ from VehicleRouting.framework.factory.QaoaFactory import QaoaFactory
 from VehicleRouting.framework.qaoa.BackendStrategy import BackendStrategy
 from VehicleRouting.framework.qaoa.CircuitStrategy import InitialStrategy, PhaseStrategy, MixerStrategy, \
     MeasurementStrategy
+from VehicleRouting.framework.qaoa.CostStategy import CostStrategy
 from VehicleRouting.standard.concretization.QuboImpl import QuboImpl
 from VehicleRouting.standard.problems.MaxCutProblem import MaxCutProblem
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
@@ -12,11 +13,13 @@ from VehicleRouting.standard.qaoa.BackendStrategy import AerBackendStrategy, Noi
 
 from VehicleRouting.standard.concretization.QuboCalculatorStrategy import MaxCutQuboCalculatorStrategy, \
     VertexOrderingQuboCalculatorStrategy, EdgeQuboCalculatorStrategy
+from VehicleRouting.standard.qaoa.CostStrategy import MeanCostStrategy, CVaRCostStrategy, MinCostStrategy
 from VehicleRouting.standard.qaoa.InitialStrategy import HGateInitialStrategy, OneHotSingleInitialStrategy, \
     CustomInitialStrategy
-from VehicleRouting.standard.qaoa.MeasurementStrategy import NoMeasurementStrategy, AllMeasurementStrategy
-from VehicleRouting.standard.qaoa.MixerStrategy import RXGateMixerStrategy, CustomMixerStrategy
-from VehicleRouting.standard.qaoa.PhaseStrategy import ZGatePhaseStrategy, WeightedZGatePhaseStrategy
+from VehicleRouting.standard.qaoa.MeasurementStrategy import NullMeasurementStrategy, TomographyMeasurementStrategy
+from VehicleRouting.standard.qaoa.MixerStrategy import RXGateMixerStrategy, PartialSwapMixerStrategy, \
+    AdjacentSwapMixerStrategy, NullMixerStrategy
+from VehicleRouting.standard.qaoa.PhaseStrategy import ZGatePhaseStrategy, WeightedZGatePhaseStrategy, NullPhaseStrategy
 
 
 class ExactMaxCutQaoaFactory(QaoaFactory):
@@ -35,14 +38,19 @@ class ExactMaxCutQaoaFactory(QaoaFactory):
         return RXGateMixerStrategy()
 
     def create_phase(self) -> PhaseStrategy:
+
         couplings = self.problem.get_edges()
+
         return ZGatePhaseStrategy(couplings)
 
     def create_measurement(self) -> MeasurementStrategy:
-        return NoMeasurementStrategy()
+        return NullMeasurementStrategy()
 
     def create_initial(self) -> InitialStrategy:
         return HGateInitialStrategy()
+
+    def create_cost(self) -> CostStrategy:
+        return CVaRCostStrategy(0.6)
 
     def create_precision(self):
         return 1
@@ -51,7 +59,7 @@ class ExactMaxCutQaoaFactory(QaoaFactory):
 class NoisyMaxCutQaoaFactory(QaoaFactory):
 
     def create_measurement(self) -> MeasurementStrategy:
-        return AllMeasurementStrategy()
+        return TomographyMeasurementStrategy()
 
     def __init__(self, problem: MaxCutProblem):
         self.problem = problem
@@ -73,6 +81,9 @@ class NoisyMaxCutQaoaFactory(QaoaFactory):
     def create_initial(self) -> InitialStrategy:
         return HGateInitialStrategy()
 
+    def create_cost(self) -> CostStrategy:
+        return MeanCostStrategy()
+
     def create_precision(self):
         return 1
 
@@ -83,7 +94,7 @@ class VertexOrderingVehicleRoutingQaoaFactory(QaoaFactory):
         self.problem = problem
 
     def create_measurement(self) -> MeasurementStrategy:
-        return NoMeasurementStrategy()
+        return NullMeasurementStrategy()
 
     def create_qubo(self) -> QuboImpl:
         calculator_strategy = VertexOrderingQuboCalculatorStrategy(self.problem)
@@ -93,17 +104,20 @@ class VertexOrderingVehicleRoutingQaoaFactory(QaoaFactory):
         return StateVectorBackendStrategy()
 
     def create_mixer(self) -> MixerStrategy:
-        return CustomMixerStrategy()
+        return RXGateMixerStrategy()
 
     def create_phase(self) -> PhaseStrategy:
         couplings = self.get_weighted_couplings()
         return WeightedZGatePhaseStrategy(couplings)
 
     def create_initial(self) -> InitialStrategy:
-        return OneHotSingleInitialStrategy()
+        return HGateInitialStrategy()
+
+    def create_cost(self) -> CostStrategy:
+        return MeanCostStrategy()
 
     def create_precision(self):
-        return 1
+        return 2
 
     def get_weighted_couplings(self):
         n = self.problem.get_number_of_vertices()
@@ -119,21 +133,51 @@ class VertexOrderingVehicleRoutingQaoaFactory(QaoaFactory):
     def mapping(self, u, i):
         return self.problem.get_number_of_vertices() * u + i
 
-
-class EdgeVehicleRoutingQaoaFactory(QaoaFactory):
-
-    def create_measurement(self) -> MeasurementStrategy:
-        return AllMeasurementStrategy()
+class InitializerTestMixerVehicleRoutingQaoaFactory(QaoaFactory):
 
     def __init__(self, problem: VehicleRoutingProblem):
         self.problem = problem
+
+    def create_measurement(self) -> MeasurementStrategy:
+        return NullMeasurementStrategy()
+
+    def create_qubo(self) -> QuboImpl:
+        calculator_strategy = VertexOrderingQuboCalculatorStrategy(self.problem)
+        return QuboImpl(calculator_strategy)
+
+    def create_backend(self) -> BackendStrategy:
+        return StateVectorBackendStrategy()
+
+    def create_mixer(self) -> MixerStrategy:
+        return NullMixerStrategy()
+
+    def create_phase(self) -> PhaseStrategy:
+        return NullPhaseStrategy()
+
+    def create_initial(self) -> InitialStrategy:
+        return CustomInitialStrategy()
+
+    def create_cost(self) -> CostStrategy:
+        return MeanCostStrategy()
+
+    def create_precision(self):
+        return 1
+
+
+class EdgeVehicleRoutingQaoaFactory(QaoaFactory):
+
+    def __init__(self, problem: VehicleRoutingProblem):
+        self.problem = problem
+
+    def create_measurement(self) -> MeasurementStrategy:
+        return NullMeasurementStrategy()
 
     def create_qubo(self) -> QuboImpl:
         calculator_strategy = EdgeQuboCalculatorStrategy(self.problem)
         return QuboImpl(calculator_strategy)
 
     def create_backend(self) -> BackendStrategy:
-        return AerBackendStrategy()
+        return StateVectorBackendStrategy()
 
     def create_mixer(self) -> MixerStrategy:
         return RXGateMixerStrategy()
@@ -144,6 +188,9 @@ class EdgeVehicleRoutingQaoaFactory(QaoaFactory):
 
     def create_initial(self) -> InitialStrategy:
         return HGateInitialStrategy()
+
+    def create_cost(self) -> CostStrategy:
+        return MeanCostStrategy()
 
     def create_precision(self):
         return 1

@@ -11,9 +11,9 @@ class QaoaMinimizerImpl(QaoaMinimizer):
         self.qaoa = qaoa
         self.result = None
 
-    def minimize(self, initial_parameters = None):
+    def minimize(self, initial_parameters=None):
         if initial_parameters is None:
-            initial_parameters = np.ones(2*self.qaoa.get_precision())
+            initial_parameters = np.ones(2 * self.qaoa.get_precision())
 
         optimization_method = "Cobyla"
         execute_circuit = self.qaoa.get_execute_circuit()

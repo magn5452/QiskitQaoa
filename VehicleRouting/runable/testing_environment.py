@@ -4,19 +4,21 @@ from qiskit.visualization import plot_histogram
 from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 from VehicleRouting.standard.concretization.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
 from VehicleRouting.standard.factories.MaxCutFactories import TwoConnectedMaxCutFactory
+from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import ThreeVertexVehicleRoutingProblemFactory
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.Program import Program
 from VehicleRouting.standard.concretization.QuboImpl import QuboImpl
 from VehicleRouting.standard.factories.QaoaMinimumEigenSolverFactories import StandardQaoaMinimumEigenSolverFactory
-from VehicleRouting.standard.concretization.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy
+from VehicleRouting.standard.concretization.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy, \
+    EdgeQuboCalculatorStrategy
 
-problem_factory = TwoConnectedMaxCutFactory
+problem_factory = ThreeVertexVehicleRoutingProblemFactory()
 problem = VehicleRoutingProblem(problem_factory)
 plotter = GraphPlotter(problem)
 plotter.plot_problem()
 
-quboCalculatorStrategy = VertexOrderingQuboCalculatorStrategy(problem)
+quboCalculatorStrategy = EdgeQuboCalculatorStrategy(problem)
 qubo = QuboImpl(quboCalculatorStrategy)
 quadratic_program = qubo.get_quadratic_program()
 
@@ -34,7 +36,7 @@ optimal_vector = solver.get_optimal_vector()
 optimal_cost = solver.get_optimal_cost()
 
 circuit_plotter = MPLCircuitPlotter()
-circuit_plotter.plot_circuit(optimal_circuit)
+circuit_plotter.plot(optimal_circuit)
 
 print(optimal_cost)
 print(optimal_vector)

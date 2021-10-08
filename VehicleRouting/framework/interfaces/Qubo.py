@@ -5,7 +5,7 @@ from qiskit_optimization import QuadraticProgram
 
 class Qubo(ABC):
     @abstractmethod
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         pass
 
     @abstractmethod
@@ -13,7 +13,7 @@ class Qubo(ABC):
         pass
 
     @abstractmethod
-    def calculate_cost(self):
+    def calculate_qubo_cost(self):
         pass
 
     @abstractmethod

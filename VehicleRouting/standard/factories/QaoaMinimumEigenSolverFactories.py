@@ -8,7 +8,7 @@ from VehicleRouting.framework.factory.QaoaMinimumEigenSolverFactory import QAOAM
 
 class StandardQaoaMinimumEigenSolverFactory(QAOAMinimumEigenSolverFactory):
     def create_qaoa(self):
-        precision = 1
+        precision = 12
         classical_optimization_method = COBYLA()
         #backend = StatevectorSimulator(precision='single')
         backend = QasmSimulator()

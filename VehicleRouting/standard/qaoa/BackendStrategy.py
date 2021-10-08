@@ -19,7 +19,7 @@ class StateVectorBackendStrategy(BackendStrategy):
         pass
 
     def get_backend(self):
-        backend = StatevectorSimulator(precision='single')
+        backend = StatevectorSimulator(precision='double')
         return backend
 
 

@@ -1,10 +1,12 @@
+import numpy as np
 from matplotlib import pyplot as plt
 from qiskit.visualization import plot_histogram
 
 from VehicleRouting.standard.concretization.QaoaMinimizer import QaoaMinimizerImpl
-from VehicleRouting.standard.factories.QaoaFactory import VertexOrderingVehicleRoutingQaoaFactory
-from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import SimpleVehicleRoutingProblemFactory, \
-    Experiment1VehicleRoutingProblemFactory
+from VehicleRouting.standard.factories.QaoaFactory import VertexOrderingVehicleRoutingQaoaFactory, \
+    InitializerTestMixerVehicleRoutingQaoaFactory, EdgeVehicleRoutingQaoaFactory
+from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import Experiment1VehicleRoutingProblemFactory, \
+    TwoVertexVehicleRoutingProblemFactory, ThreeVertexVehicleRoutingProblemFactory
 from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 from VehicleRouting.standard.concretization.Qaoa import Qaoa
@@ -12,13 +14,13 @@ from VehicleRouting.standard.plotter.SurfacePlotter import SurfacePlotter
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 
 #Problem
-factory = SimpleVehicleRoutingProblemFactory()
+factory = ThreeVertexVehicleRoutingProblemFactory()
 problem = VehicleRoutingProblem(factory)
 plotter = GraphPlotter(problem)
 plotter.plot_problem()
 
 # Qaoa
-qaoa_factory = VertexOrderingVehicleRoutingQaoaFactory(problem)
+qaoa_factory = EdgeVehicleRoutingQaoaFactory(problem)
 qaoa = Qaoa(qaoa_factory)
 
 # Minimizer
@@ -34,8 +36,7 @@ print(result)
 print(counts)
 plot_histogram(counts)
 
-# Find Surface Plot
-#plotter = SurfacePlotter()
-#plotter.plot(qaoa.get_execute_circuit())
-
+#Find Surface Plot
+plotter = SurfacePlotter()
+plotter.plot(qaoa.get_execute_circuit())
 plt.show()

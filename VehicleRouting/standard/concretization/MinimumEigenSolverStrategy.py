@@ -1,3 +1,4 @@
+from qiskit import QuantumCircuit
 from qiskit.algorithms import NumPyMinimumEigensolver
 from qiskit_optimization.algorithms import MinimumEigenOptimizer
 
@@ -12,7 +13,7 @@ class QAOAMinimumEigenSolver(MinimumEigenSolver):
     def solve(self, quadratic_program):
         return self.optimizer.solve(quadratic_program)
 
-    def get_optimal_circuit(self):
+    def get_optimal_circuit(self) -> QuantumCircuit:
         return self.qaoa.get_optimal_circuit()
 
     def get_optimal_vector(self):

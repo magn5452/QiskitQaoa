@@ -2,31 +2,54 @@ from qiskit_optimization import QuadraticProgram
 
 from VehicleRouting.framework.interfaces.Qubo import Qubo
 from VehicleRouting.standard.concretization.QuboCalculatorStrategy import QuboCalculatorStrategy
+from VehicleRouting.standard.concretization.QuboIsingConverter import QuboIsingConverter
 
 
 class QuboImpl(Qubo):
 
-    def __init__(self, calculator_strategy: QuboCalculatorStrategy):
-        self.calculator_strategy = calculator_strategy
+    def __init__(self, qubo_calculator_strategy: QuboCalculatorStrategy):
+        self.qubo_calculator_strategy = qubo_calculator_strategy
+        self.qubo_ising_converter = QuboIsingConverter(self.qubo_calculator_strategy)
 
-    def get_number_of_variables(self):
-        quadratic_program = self.calculator_strategy.get_number_of_variables()
+    def get_num_variables(self):
+        quadratic_program = self.qubo_calculator_strategy.get_num_variables()
         return quadratic_program
 
     def get_quadratic_program(self):
-        quadratic_program = QuadraticProgram('Vehicle Routing Problem')
-        self.calculator_strategy.encoding(quadratic_program)
-        constant = self.calculator_strategy.calculate_constant()
-        linear = self.calculator_strategy.calculate_linear()
-        quadratic = self.calculator_strategy.calculate_quadratic()
+        quadratic_program = QuadraticProgram('Quadratic Program')
+        self.qubo_calculator_strategy.encoding(quadratic_program)
+        constant, linear, quadratic = self.get_qubo_terms()
         quadratic_program.minimize(constant=constant, linear=linear, quadratic=quadratic)
         return quadratic_program
 
-    def calculate_cost(self, x):
-        quadratic_term = x @ self.calculator_strategy.calculate_quadratic() @ x
-        linear_term = self.calculator_strategy.calculate_linear() @ x
-        constant_term = self.calculator_strategy.calculate_constant()
-        return quadratic_term + linear_term + constant_term
+    def get_qubo_terms(self):
+        constant = self.qubo_calculator_strategy.calculate_constant()
+        linear = self.qubo_calculator_strategy.calculate_linear()
+        quadratic = self.qubo_calculator_strategy.calculate_quadratic()
+        return constant, linear, quadratic
+
+    def get_ising_terms(self):
+        constant = self.qubo_ising_converter.calculate_constant()
+        linear = self.qubo_ising_converter.calculate_linear()
+        quadratic = self.qubo_ising_converter.calculate_quadratic()
+        return constant, linear, quadratic
+
+    def calculate_ising_cost(self, bitstring):
+        bitstring = 2 * bitstring - 1
+        constant, linear, quadratic = self.get_ising_terms()
+        quadratic_cost = bitstring @ quadratic @ bitstring
+        linear_cost = linear @ bitstring
+        const_cost = constant
+        cost = quadratic_cost + linear_cost + const_cost
+        return cost
+
+    def calculate_qubo_cost(self, bitstring):
+        constant, linear, quadratic = self.get_qubo_terms()
+        quadratic_cost = bitstring @ quadratic @ bitstring
+        linear_cost = linear @ bitstring
+        const_cost = constant
+        cost = quadratic_cost + linear_cost + const_cost
+        return cost
 
     def get_qubo_calculator_strategy(self):
-        return self.calculator_strategy
+        return self.qubo_calculator_strategy

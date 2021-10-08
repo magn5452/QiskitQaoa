@@ -12,7 +12,7 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
     def __init__(self, problem: VehicleRoutingProblem):
         self.problem = problem
 
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         return (self.problem.get_number_of_vertices()) ** 2
 
     def encoding(self, quadratic_program: QuadraticProgram):
@@ -24,8 +24,8 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
         return 2 * self.problem.get_penalty_factor() * self.problem.get_number_of_vertices()
 
     def calculate_linear(self):
-        np.zeros(self.get_number_of_variables())
-        return - 4 * self.problem.get_penalty_factor() * (np.ones(self.get_number_of_variables()))
+        np.zeros(self.get_num_variables())
+        return - 4 * self.problem.get_penalty_factor() * (np.ones(self.get_num_variables()))
 
     def calculate_quadratic(self):
         Q = self.get_weight_matrix()
@@ -46,7 +46,7 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
         return np.roll(ordering, -depot_index)
 
     def get_weight_matrix(self):
-        weight_matrix = np.zeros((self.get_number_of_variables(), self.get_number_of_variables()))
+        weight_matrix = np.zeros((self.get_num_variables(), self.get_num_variables()))
 
         number_vertices = self.problem.get_number_of_vertices()
 
@@ -63,7 +63,7 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
         return weight_matrix
 
     def calculate_z_I(self, index):
-        z_I = np.zeros(self.get_number_of_variables())
+        z_I = np.zeros(self.get_num_variables())
         for i in range(self.problem.get_number_of_vertices()):
             for p in range(self.problem.get_number_of_vertices()):
                 if i == index:
@@ -71,13 +71,13 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
         return z_I
 
     def calculate_z_I_matrix(self):
-        z_I_matrix = np.zeros((self.get_number_of_variables(), self.problem.get_number_of_vertices()))
+        z_I_matrix = np.zeros((self.get_num_variables(), self.problem.get_number_of_vertices()))
         for i in range(0, self.problem.get_number_of_vertices()):
             z_I_matrix[:, i] = self.calculate_z_I(i)
         return z_I_matrix
 
     def calculate_z_P(self, index):
-        z_I = np.zeros(self.get_number_of_variables())
+        z_I = np.zeros(self.get_num_variables())
         for i in range(self.problem.get_number_of_vertices()):
             for p in range(self.problem.get_number_of_vertices()):
                 if p == index:
@@ -85,7 +85,7 @@ class VertexOrderingQuboCalculatorStrategy(QuboCalculatorStrategy):
         return z_I
 
     def calculate_z_P_matrix(self):
-        z_P_matrix = np.zeros((self.get_number_of_variables(), self.problem.get_number_of_vertices()))
+        z_P_matrix = np.zeros((self.get_num_variables(), self.problem.get_number_of_vertices()))
         for p in range(0, self.problem.get_number_of_vertices()):
             z_P_matrix[:, p] = self.calculate_z_P(p)
         return z_P_matrix
@@ -96,7 +96,7 @@ class EdgeQuboCalculatorStrategy(QuboCalculatorStrategy):
     def __init__(self, problem: VehicleRoutingProblem):
         self.problem = problem
 
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         return self.problem.get_number_of_edges()
 
     def encoding(self, quadratic_program: QuadraticProgram):
@@ -122,7 +122,7 @@ class EdgeQuboCalculatorStrategy(QuboCalculatorStrategy):
         return Q
 
     def calculate_z_S(self, i):
-        z_S = np.zeros(self.get_number_of_variables())
+        z_S = np.zeros(self.get_num_variables())
         for index, (source, target) in enumerate(self.problem.get_edges()):
             source_is_i = source == i
             if source_is_i:
@@ -130,13 +130,13 @@ class EdgeQuboCalculatorStrategy(QuboCalculatorStrategy):
         return z_S
 
     def calculate_z_S_matrix(self):
-        z_S_matrix = np.zeros((self.get_number_of_variables(), self.problem.get_number_of_vertices()))
+        z_S_matrix = np.zeros((self.get_num_variables(), self.problem.get_number_of_vertices()))
         for i in range(0, self.problem.get_number_of_vertices()):
             z_S_matrix[:, i] = self.calculate_z_S(i)
         return z_S_matrix
 
     def calculate_z_T(self, i):
-        z_T = np.zeros(self.get_number_of_variables())
+        z_T = np.zeros(self.get_num_variables())
         for index, (source, target) in enumerate(self.problem.get_edges()):
             target_is_i = target == i
             if target_is_i:
@@ -144,7 +144,7 @@ class EdgeQuboCalculatorStrategy(QuboCalculatorStrategy):
         return z_T
 
     def calculate_z_T_matrix(self):
-        z_T_matrix = np.zeros((self.get_number_of_variables(), self.problem.get_number_of_vertices()))
+        z_T_matrix = np.zeros((self.get_num_variables(), self.problem.get_number_of_vertices()))
         for i in range(0, self.problem.get_number_of_vertices()):
             z_T_matrix[:, i] = self.calculate_z_T(i)
         return z_T_matrix
@@ -161,7 +161,7 @@ class StubQuboCalculatorStrategy(QuboCalculatorStrategy):
     def __init__(self, problem: GraphProblem):
         self.problem = problem
 
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         return self.problem.get_number_of_vertices()
 
     def encoding(self, quadratic_program: QuadraticProgram):
@@ -172,13 +172,18 @@ class StubQuboCalculatorStrategy(QuboCalculatorStrategy):
         return 1
 
     def calculate_linear(self):
-        return np.ones(self.get_number_of_variables())
+        return np.ones(self.get_num_variables())
 
     def calculate_quadratic(self):
-        return np.ones(self.get_number_of_variables(), self.get_number_of_variables())
+        return np.ones(self.get_num_variables(), self.get_num_variables())
 
 
 class MaxCutQuboCalculatorStrategy(QuboCalculatorStrategy):
+    """
+    A MaxCut qubo calculator strategy bas on the following web page. I have used the first equation on the site.
+
+    https://qiskit.org/documentation/optimization/tutorials/06_examples_max_cut_and_tsp.html
+    """
 
     def __init__(self, problem: MaxCutProblem):
         self.problem = problem
@@ -186,7 +191,7 @@ class MaxCutQuboCalculatorStrategy(QuboCalculatorStrategy):
     def get_edges(self):
         return self.problem.get_edges()
 
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         return self.problem.get_number_of_vertices()
 
     def encoding(self, quadratic_program: QuadraticProgram):
@@ -197,17 +202,18 @@ class MaxCutQuboCalculatorStrategy(QuboCalculatorStrategy):
         return 0
 
     def calculate_linear(self):
-        g = np.zeros(self.get_number_of_variables())
-        for i in range(self.get_number_of_variables()):
-            for j in range(self.get_number_of_variables()):
+        linear = np.zeros(self.get_num_variables())
+        for i in range(self.get_num_variables()):
+            #linear += self.problem.get_weight(i, i) Add weight of nodes
+            for j in range(self.get_num_variables()):
                 if i != j:
-                    g[i] += self.problem.get_weight(i, j)
-        return -g
+                    linear[i] += self.problem.get_weight(i, j)
+        return -linear
 
     def calculate_quadratic(self):
-        Q = np.zeros((self.get_number_of_variables(), self.get_number_of_variables()))
-        for i in range(self.get_number_of_variables()):
-            for j in range(self.get_number_of_variables()):
+        quadratic = np.zeros((self.get_num_variables(), self.get_num_variables()))
+        for i in range(self.get_num_variables()):
+            for j in range(self.get_num_variables()):
                 if i != j:
-                    Q[i, j] = self.problem.get_weight(i, j)
-        return Q
+                    quadratic[i, j] = self.problem.get_weight(i, j)
+        return quadratic

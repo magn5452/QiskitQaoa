@@ -21,5 +21,5 @@ class QuboCalculatorStrategy(ABC):
         pass
 
     @abstractmethod
-    def get_number_of_variables(self):
+    def get_num_variables(self):
         pass

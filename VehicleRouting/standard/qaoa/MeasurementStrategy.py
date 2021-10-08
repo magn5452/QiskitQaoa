@@ -1,7 +1,7 @@
 from VehicleRouting.framework.qaoa.CircuitStrategy import MeasurementStrategy
 
 
-class AllMeasurementStrategy(MeasurementStrategy):
+class TomographyMeasurementStrategy(MeasurementStrategy):
     def __init__(self):
         pass
 
@@ -9,7 +9,7 @@ class AllMeasurementStrategy(MeasurementStrategy):
         quantum_circuit.measure_all()
 
 
-class NoMeasurementStrategy(MeasurementStrategy):
+class NullMeasurementStrategy(MeasurementStrategy):
     def __init__(self):
         pass
 

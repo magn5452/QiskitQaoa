@@ -4,7 +4,17 @@ import numpy as np
 from VehicleRouting.framework.problem.GraphStrategy import GraphStrategy
 
 
-class SimpleExperimentGraphStrategy(GraphStrategy):
+class TwoVertexExperimentGraphStrategy(GraphStrategy):
+    def get_graph(self):
+        graph = nx.DiGraph()
+        graph.add_nodes_from([0, 1])
+        graph.add_weighted_edges_from(
+            [[0, 1, 36.840], [1, 0, 36.840]])
+
+        return graph
+
+
+class ThreeVertexExperimentGraphStrategy(GraphStrategy):
     def get_graph(self):
         graph = nx.DiGraph()
         graph.add_nodes_from([0, 1, 2])
