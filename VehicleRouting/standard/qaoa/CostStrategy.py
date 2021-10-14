@@ -62,7 +62,7 @@ class CVaRCostStrategy(CostStrategy):
         return cost_dic
 
 
-class MeanCostStrategy(CostStrategy):
+class AverageCostStrategy(CostStrategy):
     def __init__(self):
         pass
 
@@ -77,3 +77,15 @@ class MeanCostStrategy(CostStrategy):
 
         expectation_value = sum_cost / sum_count
         return expectation_value
+
+
+class ProjectionStrategy(CostStrategy):
+    def __init__(self, bitstring):
+        self.bitstring = bitstring
+
+    def calculate_cost(self, count_dic, qubo):
+        counts = count_dic.values()
+        total = sum(counts)
+        count = count_dic[self.bitstring]
+        return 1-count/total
+

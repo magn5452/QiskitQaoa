@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from qiskit import QuantumCircuit, transpile
 from scipy.optimize import minimize
@@ -105,14 +107,16 @@ class Qaoa:
 
         def execute_circuit(theta):
             quantum_circuit = self.set_up_qaoa_circuit(theta)
-            transpiled = transpile(quantum_circuit, backend=self.backend_strategy)
+            transpiled = transpile(quantum_circuit, backend=self.backend_strategy, optimization_level = 3)
             counts = self.backend_strategy.run(transpiled).result().get_counts()
             return self.calculate_cost(counts)
 
         return execute_circuit
 
     def simulate(self, theta):
+        start_time = time.time()
         transpiled = transpile(self.set_up_qaoa_circuit(theta), backend=self.backend_strategy)
+        print("--- %s seconds ---" % (time.time() - start_time))
         result = self.backend_strategy.run(transpiled).result()
         counts = result.get_counts()
         expectation = self.calculate_cost(counts)

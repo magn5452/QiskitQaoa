@@ -14,13 +14,23 @@ class TwoVertexExperimentGraphStrategy(GraphStrategy):
         return graph
 
 
-class ThreeVertexExperimentGraphStrategy(GraphStrategy):
+class SymmetricThreeVertexExperimentGraphStrategy(GraphStrategy):
     def get_graph(self):
         graph = nx.DiGraph()
         graph.add_nodes_from([0, 1, 2])
         graph.add_weighted_edges_from(
             [[0, 1, 36.840], [0, 2, 5.061], [1, 0, 36.840], [1, 2, 24.55], [2, 0, 5.061],
              [2, 1, 24.55]])
+
+        return graph
+
+class AssymetricThreeVertexExperimentGraphStrategy(GraphStrategy):
+    def get_graph(self):
+        graph = nx.DiGraph()
+        graph.add_nodes_from([0, 1, 2])
+        graph.add_weighted_edges_from(
+            [[0, 1, 36.840], [0, 2, 5.061], [1, 0, 2*36.840], [1, 2, 24.55], [2, 0, 2*5.061],
+             [2, 1, 2*24.55]])
 
         return graph
 

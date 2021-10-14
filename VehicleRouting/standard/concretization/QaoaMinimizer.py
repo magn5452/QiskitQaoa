@@ -17,7 +17,8 @@ class QaoaMinimizerImpl(QaoaMinimizer):
 
         optimization_method = "Cobyla"
         execute_circuit = self.qaoa.get_execute_circuit()
-        self.result = minimize(execute_circuit, initial_parameters, method=optimization_method)
+        options = {'disp':True,'maxiter':100}
+        self.result = minimize(execute_circuit, initial_parameters, method=optimization_method, options=options)
         return self.get_result(), self.get_optimal_parameter(), self.get_optimal_circuit()
 
     def get_result(self):

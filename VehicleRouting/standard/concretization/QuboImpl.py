@@ -39,16 +39,18 @@ class QuboImpl(Qubo):
         constant, linear, quadratic = self.get_ising_terms()
         quadratic_cost = bitstring @ quadratic @ bitstring
         linear_cost = linear @ bitstring
-        const_cost = constant
-        cost = quadratic_cost + linear_cost + const_cost
+        constant_cost = constant
+        cost = quadratic_cost + linear_cost + constant_cost
+        #print("Ising: ",constant_cost, linear_cost, quadratic_cost,cost)
         return cost
 
     def calculate_qubo_cost(self, bitstring):
         constant, linear, quadratic = self.get_qubo_terms()
         quadratic_cost = bitstring @ quadratic @ bitstring
         linear_cost = linear @ bitstring
-        const_cost = constant
-        cost = quadratic_cost + linear_cost + const_cost
+        constant_cost = constant
+        cost = quadratic_cost + linear_cost + constant_cost
+        #print("Qubo: ",constant_cost, linear_cost, quadratic_cost,cost)
         return cost
 
     def get_qubo_calculator_strategy(self):

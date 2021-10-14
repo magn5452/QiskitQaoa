@@ -1,12 +1,12 @@
 from abc import abstractmethod, ABC
 
-from VehicleRouting.framework.factory.MaxCutFactory import MaxCutFactory
+from VehicleRouting.framework.factory.MaxCutProblemFactory import MaxCutProblemFactory
 from VehicleRouting.framework.problem.GraphStrategy import GraphStrategy
 from VehicleRouting.standard.concretization.GraphStrategy import TwoConnectedGraphStrategy, CompleteGraphStrategy, \
     Experiment1GraphStrategy, FiveVertexGraphStrategy
 
 
-class TwoConnectedMaxCutFactory(MaxCutFactory):
+class TwoConnectedMaxCutFactory(MaxCutProblemFactory):
 
     def __init__(self, num_vertex=4):
         self.num_vertex = num_vertex
@@ -15,7 +15,7 @@ class TwoConnectedMaxCutFactory(MaxCutFactory):
         return TwoConnectedGraphStrategy(self.num_vertex)
 
 
-class FiveVertexMaxCutFactory(MaxCutFactory):
+class FiveVertexMaxCutFactory(MaxCutProblemFactory):
 
     def __init__(self, num_vertex=4):
         self.num_vertex = num_vertex
@@ -24,7 +24,7 @@ class FiveVertexMaxCutFactory(MaxCutFactory):
         return FiveVertexGraphStrategy()
 
 
-class CompleteMaxCutFactory(MaxCutFactory):
+class CompleteMaxCutFactory(MaxCutProblemFactory):
 
     def __init__(self, num_vertex=4):
         self.num_vertex = num_vertex

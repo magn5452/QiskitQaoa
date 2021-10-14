@@ -4,7 +4,7 @@ from qiskit.visualization import plot_histogram
 from VehicleRouting.standard.concretization.CircuitPlotter import MPLCircuitPlotter
 from VehicleRouting.standard.concretization.MinimumEigenSolverStrategy import QAOAMinimumEigenSolver
 from VehicleRouting.standard.factories.MaxCutFactories import TwoConnectedMaxCutFactory
-from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import ThreeVertexVehicleRoutingProblemFactory
+from VehicleRouting.standard.factories.VehicleRoutingProblemFactories import AsymmetricThreeVertexVehicleRoutingProblemFactory
 from VehicleRouting.standard.problems.VehicleRoutingProblem import VehicleRoutingProblem
 from VehicleRouting.standard.plotter.GraphPlotter import GraphPlotter
 from VehicleRouting.standard.Program import Program
@@ -13,7 +13,7 @@ from VehicleRouting.standard.factories.QaoaMinimumEigenSolverFactories import St
 from VehicleRouting.standard.concretization.QuboCalculatorStrategy import VertexOrderingQuboCalculatorStrategy, \
     EdgeQuboCalculatorStrategy
 
-problem_factory = ThreeVertexVehicleRoutingProblemFactory()
+problem_factory = AsymmetricThreeVertexVehicleRoutingProblemFactory()
 problem = VehicleRoutingProblem(problem_factory)
 plotter = GraphPlotter(problem)
 plotter.plot_problem()

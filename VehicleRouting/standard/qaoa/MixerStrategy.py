@@ -1,4 +1,5 @@
 import math
+import time
 
 import numpy as np
 from qiskit.extensions import HamiltonianGate
@@ -65,17 +66,20 @@ class AdjacentSwapMixerStrategy(MixerStrategy):
         quantum_circuit.barrier()
         num_vertices = int(np.round(np.sqrt(quantum_circuit.num_qubits)))
         hamiltonian = self.make_adjacent_swap_mixer_hamiltonian(num_vertices)
+        print(hamiltonian)
         unitary_gate = HamiltonianGate(hamiltonian.to_matrix(), beta, label="(" + str(round(beta, 1)) + ")")
         quantum_circuit.append(unitary_gate, range(quantum_circuit.num_qubits))
 
     def make_adjacent_swap_mixer_hamiltonian(self, num_vertices) -> SpinOp:
         opr_list = []
+
         for city_u in range(num_vertices):
             for city_v in range(num_vertices):
                 for position_i in range(num_vertices):
                     for position_j in range(num_vertices):
                         if city_u < city_v and position_i < position_j:
-                            string, string_hermitian = self.make_string_partial_mixer(city_u, city_v, position_i, position_j, num_vertices)
+                            string, string_hermitian = self.make_string_partial_mixer(city_u, city_v, position_i,
+                                                                                      position_j, num_vertices)
                             opr_list.append((string, 1))
                             opr_list.append((string_hermitian, 1))
 

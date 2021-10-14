@@ -1,7 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import cm
-
+from tqdm import tqdm
+import time
 
 class SurfacePlotter:
 
@@ -28,16 +29,19 @@ class SurfacePlotter:
 
 
         # Create the mesh X, Y and compute Z
-        x_list = y_list = np.arange(0, np.pi/2, 0.2)
-        X, Y = np.meshgrid(x_list, y_list)
+        gamma_max = np.pi
+        beta_max = np.pi
+        gamma_list = np.arange(0, gamma_max, gamma_max / 20)
+        beta_list = np.arange(0, beta_max, beta_max / 20)
+        X, Y = np.meshgrid(beta_list, gamma_list)
         Z = np.zeros(X.shape)
-        for ix, x in enumerate(x_list):
-            for iy, y in enumerate(y_list):
-                Z[ix, iy] = fun([x, y])
+        for i_gamma, gamma in tqdm(enumerate(gamma_list)):
+            for i_beta, beta in enumerate(beta_list):
+                Z[i_beta, i_gamma] = fun([beta, gamma])
         ax.plot_surface(X, Y, Z, cmap=cm.rainbow, linewidth=0, antialiased=False, alpha=0.8)
 
-        ax.set_xlabel(r'$\beta$')
-        ax.set_ylabel(r'$\gamma$')
+        ax.set_xlabel(r'$\gamma$')
+        ax.set_ylabel(r'$\beta$')
         ax.set_zlabel(r'$C(\theta)$')
 
         plt.show()

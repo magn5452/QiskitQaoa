@@ -3,12 +3,12 @@ import networkx as nx
 import numpy as np
 
 from VehicleRouting.framework.problem.GraphProblem import GraphProblem
-from VehicleRouting.framework.factory.MaxCutFactory import MaxCutFactory
+from VehicleRouting.framework.factory.MaxCutProblemFactory import MaxCutProblemFactory
 
 
 class MaxCutProblem(GraphProblem):
 
-    def __init__(self, factory: MaxCutFactory):
+    def __init__(self, factory: MaxCutProblemFactory):
         self.graph_strategy = factory.create_graph_strategy()
         self.graph = self.graph_strategy.get_graph()
         self.number_of_vertices = self.graph.order()
